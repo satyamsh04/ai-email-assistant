@@ -1,5 +1,9 @@
 # Manual Test Procedures - Academic Email Assistant
 
+> ⚠️ Note: During testing, AI response generation was inconsistent on some local environments. As a result, response-based test cases (e.g. TC-06–TC-08) may not be fully reproducible across all machines. System-level, UI, and integration tests were prioritised.
+
+> 📌 Scope Note: Current testing focuses on prompt handling, system functionality, UI behaviour, and integration between components. Email classification functionality has been deferred to Sprint 3 following the sprint review and is therefore not included in this test suite.
+
 ## Test Environment Setup
 
 ### Prerequisites
@@ -10,11 +14,11 @@
 - [ ] Test data (sample emails) loaded in Outlook
 
 ### Setup Verification
-- [ ] Open Outlook and verify "Academic Assistant" button appears in ribbon
-- [ ] Click Academic Assistant to open sidebar
-- [ ] Verify sidebar shows "Disconnected" status initially
-- [ ] Enter gateway token in settings (⚙ icon) and click "Save & Connect"
-- [ ] Verify status changes to "Academic AI Ready"
+- [x] Open Outlook and verify "Academic Assistant" button appears in ribbon
+- [x] Click Academic Assistant to open sidebar
+- [x] Verify sidebar shows "Disconnected" status initially
+- [x] Enter gateway token in settings (⚙ icon) and click "Save & Connect"
+- [x] Verify status changes to "Academic AI Ready"
 
 ---
 
@@ -227,3 +231,194 @@
 6. Reopen Outlook
 7. Open Academic Assistant
 8. Verify auto-reconnect without re-entering token
+
+---
+
+## Additional Manual Test Procedures (System & Integration - Reem)
+
+---
+
+## TC-01: Outlook Add-in Loading
+
+**Objective**: Verify the add-in loads correctly in Outlook
+
+**Method**: Manual Test  
+
+**Steps**:
+1. Open Outlook on web
+2. Select any email
+3. Click the "Academic Assistant" extension
+
+**Expected Result**:
+- Sidebar opens successfully
+- No crashes or error banners occur
+
+**Actual Result**:
+The add-in successfully loaded within the Outlook sidebar without any crashes or errors. The interface rendered correctly and remained responsive.
+
+**Status**: Passed
+
+---
+
+## TC-02: Email Context Extraction
+
+**Objective**: Verify email metadata is correctly extracted
+
+**Method**: Manual Test  
+
+**Steps**:
+1. Open an email
+2. Open the add-in
+3. Observe header details
+
+**Expected Result**:
+- Subject, sender, and date are visible
+- Information matches the selected email
+
+**Actual Result**:
+The add-in correctly extracted and displayed the selected email’s subject, sender, and timestamp. All metadata matched the original email content, confirming accurate context retrieval.
+
+**Status**: Passed
+
+---
+
+## TC-03: Gateway Token Connection
+
+**Objective**: Verify successful authentication with the gateway
+
+**Method**: Integration Test  
+
+**Steps**:
+1. Enter a valid token in add-in settings
+2. Click "Save & Connect"
+
+**Expected Result**:
+- Status changes to "Academic AI Ready"
+
+**Actual Result**:
+The system successfully authenticated with the OpenClaw Gateway using a valid token. The connection status updated to "Academic AI Ready," confirming successful integration.
+
+**Status**: Passed
+
+---
+
+## TC-04: Invalid or Missing Token
+
+**Objective**: Verify secure handling of invalid authentication
+
+**Method**: Security / Manual Test  
+
+**Steps**:
+1. Remove or modify the token
+2. Click "Save & Connect"
+
+**Expected Result**:
+- System does not connect
+- No sensitive information is exposed
+
+**Actual Result**:
+When an invalid or missing token was provided, the system remained disconnected. No sensitive authentication details were exposed, demonstrating appropriate security handling.
+
+**Status**: Passed
+
+---
+
+## TC-05: End-to-End Workflow (Connection Validation)
+
+**Objective**: Verify connection across all system components
+
+**Method**: Integration Test  
+
+**Steps**:
+1. Ensure OpenClaw Gateway is running
+2. Ensure add-in shows "Academic AI Ready"
+
+**Expected Result**:
+- Add-in ↔ Gateway ↔ Ollama connection established
+
+**Actual Result**:
+The system established a successful end-to-end connection between the Outlook add-in, WebSocket gateway, and local Ollama model.
+
+**Status**: Passed
+
+---
+
+## TC-09: Empty / Unreadable Email Body
+
+**Objective**: Verify system handles missing email content
+
+**Method**: Edge Case / Manual Test  
+
+**Steps**:
+1. Open an email with minimal or no body content
+2. Open the add-in
+
+**Expected Result**:
+- No crashes occur
+- UI loads normally
+
+**Actual Result**:
+The system handled emails with minimal or missing body content without crashing. The add-in remained functional and continued to display available metadata.
+
+**Status**: Passed
+
+---
+
+## TC-11: Very Long Email Body
+
+**Objective**: Verify system handles large email inputs
+
+**Method**: Edge Case / Manual Test  
+
+**Steps**:
+1. Open an email with large body content (~3000 characters)
+2. Open the add-in
+
+**Expected Result**:
+- No freezing or crashes occur
+
+**Actual Result**:
+The system successfully handled long email content without performance degradation or UI failure, indicating stable handling of large inputs.
+
+**Status**: Passed
+
+---
+
+## TC-12: Gateway / Model Unavailable
+
+**Objective**: Verify system behaviour when backend services are offline
+
+**Method**: Edge Case / Integration Test  
+
+**Steps**:
+1. Stop the OpenClaw gateway (Ctrl + C in terminal)
+2. Refresh Outlook
+3. Attempt to use the add-in
+
+**Expected Result**:
+- System shows disconnected state
+
+**Actual Result**:
+When the OpenClaw Gateway was unavailable, the system correctly displayed a disconnected state and prevented further interaction, demonstrating safe failure behaviour.
+
+**Status**: Passed
+
+---
+
+## TC-14: Privacy and Data Handling
+
+**Objective**: Verify sensitive data is handled securely
+
+**Method**: Manual / Security Review  
+
+**Steps**:
+1. Observe system behaviour during usage
+2. Check UI and logs for exposed data
+
+**Expected Result**:
+- No sensitive data stored or exposed
+
+**Actual Result**:
+No sensitive email content or authentication tokens were visibly stored or exposed within the interface or logs. All processing remained local, aligning with privacy requirements.
+
+**Status**: Passed
