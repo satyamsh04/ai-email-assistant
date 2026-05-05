@@ -8,7 +8,8 @@
     "build": "webpack --mode production",
     "start": "webpack serve --mode development",
     "sideload": "npx office-addin-dev-certs install && webpack serve --mode development",
-    "validate": "npx office-addin-manifest validate manifest.xml"
+    "validate": "npx office-addin-manifest validate manifest.xml",
+    "gateway": "npx --yes openclaw gateway"
   },
   "dependencies": {
     "@microsoft/office-js": "^1.1.89"
