@@ -54,6 +54,12 @@ module.exports = (env, argv) => {
       server: { type: "https", options: isDev ? getHttpsOptions() : undefined },
       proxy: [
         {
+          context: ["/ml-api"],
+          target: "http://127.0.0.1:8000",
+          changeOrigin: true,
+          pathRewrite: { "^/ml-api": "" },
+        },
+        {
           context: ["/ai-gateway"],
           target: "ws://127.0.0.1:18789",
           ws: true,

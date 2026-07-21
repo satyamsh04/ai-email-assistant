@@ -25,6 +25,7 @@ let lastShownMsgId = null;
 let retryCount = 0;
 let retryTimer = null;
 let replyRetryCount = 0; // FIX #2: Retry counter for fetchLatestReply
+let lastRecommendation = null;
 
 // ===== DOM Helper =====
 const $ = id => document.getElementById(id);
@@ -216,6 +217,9 @@ function readEmail() {
     const date = item.dateTimeCreated
       ? new Date(item.dateTimeCreated).toLocaleString()
       : "";
+    const receivedAt = item.dateTimeCreated
+      ? new Date(item.dateTimeCreated).toJSON()
+      : null;
     const to = item.to
       ? item.to.map(r => `${r.displayName} <${r.emailAddress}>`).join(", ")
       : "";
@@ -224,7 +228,7 @@ function readEmail() {
       const body =
         result.status === Office.AsyncResultStatus.Succeeded ? result.value : "";
 
-      currentEmail = { subject, from, to, date, body };
+      currentEmail = { subject, from, to, date, receivedAt, body };
 
       const newId = hashString(subject + "|" + from + "|" + date);
 
@@ -234,6 +238,7 @@ function readEmail() {
         contextSentForEmail = null; // FIX #3: Will be set to activeEmailId on first send
         lastShownMsgId = null;
         replyRetryCount = 0; // FIX #2: Reset retry count for new email
+        lastRecommendation = null;
         clearChatMessages();
         if (isConnected) loadHistory();
       }
@@ -368,6 +373,24 @@ function toggleCategory(name) {
         });
       });
     }
+  });
+}
+
+/** Applies a category without removing it when it is already present. */
+function applyCategory(name) {
+  const item = Office.context.mailbox.item;
+  if (!item || !item.categories) return;
+
+  item.categories.getAsync(result => {
+    if (result.status !== Office.AsyncResultStatus.Succeeded) return;
+    const active = (result.value || []).map(c => (c.displayName || c).toLowerCase());
+    if (active.includes(name.toLowerCase())) {
+      loadCategories();
+      return;
+    }
+    ensureMasterCategory(name, () => {
+      item.categories.addAsync([name], () => loadCategories());
+    });
   });
 }
 
@@ -844,21 +867,75 @@ function draftReply() {
 }
 
 /**
- * Asks the AI to read the email and assign a priority label (Urgent / Medium / Minor).
- * The AI appends a [LABEL:X] tag which processAIText converts into an Outlook
- * category automatically.
+ * Requests a recommendation from the local ML service. If that service is not
+ * running, falls back to the existing OpenClaw/Ollama classification flow.
  */
-function autoLabel() {
+async function autoLabel() {
   if (!currentEmail) {
     addMessage("err", "No email selected.");
     return;
   }
   addMessage("user", "Assign a priority label to this email");
   showTyping();
-  waitingForResponse = true;
-  sendMessage(
-    "Read this email and assign a priority label based on its urgency. Reply with a brief reason for your choice."
-  );
+
+  try {
+    const response = await fetch("/ml-api/recommend", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(toMlEmail(currentEmail)),
+    });
+    if (!response.ok) throw new Error(`ML service returned ${response.status}`);
+
+    const recommendation = await response.json();
+    hideTyping();
+    lastRecommendation = recommendation;
+    applyCategory(recommendation.label);
+    addMessage(
+      "ai",
+      `${recommendation.reason} Recommended label: ${recommendation.label} (${Math.round(
+        recommendation.confidence * 100
+      )}% confidence).`
+    );
+  } catch (_) {
+    waitingForResponse = true;
+    sendMessage(
+      "Read this email and assign a priority label based on its urgency. Reply with a brief reason for your choice."
+    );
+  }
+}
+
+/** Maps Outlook email state to the recommendation service schema. */
+function toMlEmail(email) {
+  return {
+    email_id: activeEmailId || "",
+    subject: email.subject || "",
+    sender: email.from || "",
+    body: email.body || "",
+    received_at: email.receivedAt || null,
+    has_attachments: false,
+    is_from_vip: false,
+  };
+}
+
+/** Records a manual correction after an ML recommendation. */
+function handleManualCategory(name) {
+  if (
+    lastRecommendation &&
+    currentEmail &&
+    lastRecommendation.label !== name
+  ) {
+    fetch("/ml-api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: toMlEmail(currentEmail),
+        predicted_label: lastRecommendation.label,
+        corrected_label: name,
+      }),
+    }).catch(() => {});
+    lastRecommendation = null;
+  }
+  toggleCategory(name);
 }
 
 /**
@@ -907,7 +984,7 @@ function processAIText(text) {
   if (match) {
     const label =
       match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
-    toggleCategory(label);
+    applyCategory(label);
     cleaned = cleaned.replace(/\s*\[LABEL:[^\]]+\]/gi, "").trim();
   }
 
@@ -1043,7 +1120,7 @@ function bindEvents() {
   $("auto-label-btn").addEventListener("click", autoLabel);
 
   document.querySelectorAll(".btn-label").forEach(btn => {
-    btn.addEventListener("click", () => toggleCategory(btn.dataset.category));
+    btn.addEventListener("click", () => handleManualCategory(btn.dataset.category));
   });
 
   $("settings-btn").addEventListener("click", () => {

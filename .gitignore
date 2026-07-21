@@ -15,3 +15,13 @@ Thumbs.db
 coverage/
 .claude/
 .cursor/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Trained models are reproducible local artifacts
+ml/models/*
+!ml/models/.gitkeep

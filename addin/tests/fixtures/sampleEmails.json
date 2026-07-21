@@ -98,25 +98,25 @@
     "body": "Dear Dr. Jadidi,\n\nI am having issues with my group project teammate. They have not been contributing to the project and are not responding to our messages.\n\nWe have a deadline coming up and I am concerned we will not be able to submit on time.\n\nWhat options do I have in this situation?\n\nThank you,\nEmily Brown",
     "category": "complaint",
     "urgency": "high"
-  }
+  },
   {
-  "id": "email-011",
-  "subject": "",
-  "sender": { "name": "Unknown Student", "address": "unknown@student.university.edu" },
-  "recipients": [{ "name": "Dr. Zahra Jadidi", "address": "z.jadidi@university.edu" }],
-  "date": "2026-04-19T10:00:00Z",
-  "body": "",
-  "category": "unknown",
-  "urgency": "low"
-  }
+    "id": "email-011",
+    "subject": "",
+    "sender": { "name": "Unknown Student", "address": "unknown@student.university.edu" },
+    "recipients": [{ "name": "Dr. Zahra Jadidi", "address": "z.jadidi@university.edu" }],
+    "date": "2026-04-19T10:00:00Z",
+    "body": "",
+    "category": "unknown",
+    "urgency": "low"
+  },
   {
-  "id": "email-012",
-  "subject": "Long email test case",
-  "sender": { "name": "Test User", "address": "test.user@student.university.edu" },
-  "recipients": [{ "name": "Dr. Zahra Jadidi", "address": "z.jadidi@university.edu" }],
-  "date": "2026-04-19T11:00:00Z",
-  "body": "This is a long email body used for testing system limits. ".repeat(100),
-  "category": "inquiry",
-  "urgency": "low"
+    "id": "email-012",
+    "subject": "Long email test case",
+    "sender": { "name": "Test User", "address": "test.user@student.university.edu" },
+    "recipients": [{ "name": "Dr. Zahra Jadidi", "address": "z.jadidi@university.edu" }],
+    "date": "2026-04-19T11:00:00Z",
+    "body": "This is a long email body used for testing system limits. It contains repeated explanatory content so the fixture exercises handling of longer messages without embedding executable JavaScript in JSON.",
+    "category": "inquiry",
+    "urgency": "low"
   }
 ]

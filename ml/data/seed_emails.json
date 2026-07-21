@@ -1,0 +1,110 @@
+[
+  {
+    "email_id": "seed-001",
+    "subject": "URGENT: final submission due today",
+    "sender": "course.convenor@university.edu",
+    "body": "Action required immediately. Upload the final assessment before 5 PM today.",
+    "has_attachments": false,
+    "is_from_vip": true,
+    "label": "Urgent"
+  },
+  {
+    "email_id": "seed-002",
+    "subject": "Cannot access exam portal",
+    "sender": "student@university.edu",
+    "body": "My exam starts in one hour and the portal is unavailable. Please help ASAP.",
+    "has_attachments": true,
+    "is_from_vip": false,
+    "label": "Urgent"
+  },
+  {
+    "email_id": "seed-003",
+    "subject": "Overdue compliance acknowledgement",
+    "sender": "dean@university.edu",
+    "body": "This is a final notice. Your acknowledgement is overdue and must be completed now.",
+    "has_attachments": false,
+    "is_from_vip": true,
+    "label": "Urgent"
+  },
+  {
+    "email_id": "seed-004",
+    "subject": "Room change for today's class",
+    "sender": "timetabling@university.edu",
+    "body": "The class beginning at noon has moved to room 3.12.",
+    "has_attachments": false,
+    "is_from_vip": false,
+    "label": "Urgent"
+  },
+  {
+    "email_id": "seed-005",
+    "subject": "Question about assignment rubric",
+    "sender": "student@university.edu",
+    "body": "Could you please clarify how criterion three will be marked?",
+    "has_attachments": false,
+    "is_from_vip": false,
+    "label": "Medium"
+  },
+  {
+    "email_id": "seed-006",
+    "subject": "Please review next week's agenda",
+    "sender": "colleague@university.edu",
+    "body": "Can you review the attached meeting agenda before next Tuesday?",
+    "has_attachments": true,
+    "is_from_vip": false,
+    "label": "Medium"
+  },
+  {
+    "email_id": "seed-007",
+    "subject": "Request for consultation",
+    "sender": "student@university.edu",
+    "body": "Are you available for a short consultation sometime this week?",
+    "has_attachments": false,
+    "is_from_vip": false,
+    "label": "Medium"
+  },
+  {
+    "email_id": "seed-008",
+    "subject": "Draft policy feedback",
+    "sender": "manager@university.edu",
+    "body": "Please send any comments on the draft policy by the end of next week.",
+    "has_attachments": true,
+    "is_from_vip": true,
+    "label": "Medium"
+  },
+  {
+    "email_id": "seed-009",
+    "subject": "Campus newsletter - July",
+    "sender": "communications@university.edu",
+    "body": "Read this month's news, events, and staff profiles.",
+    "has_attachments": false,
+    "is_from_vip": false,
+    "label": "Minor"
+  },
+  {
+    "email_id": "seed-010",
+    "subject": "Library opening hours",
+    "sender": "library@university.edu",
+    "body": "The library will use standard opening hours during semester.",
+    "has_attachments": false,
+    "is_from_vip": false,
+    "label": "Minor"
+  },
+  {
+    "email_id": "seed-011",
+    "subject": "Event invitation",
+    "sender": "events@university.edu",
+    "body": "You are invited to the optional alumni networking evening next month.",
+    "has_attachments": true,
+    "is_from_vip": false,
+    "label": "Minor"
+  },
+  {
+    "email_id": "seed-012",
+    "subject": "Weekly system report",
+    "sender": "noreply@university.edu",
+    "body": "Your automated weekly usage report is attached for information.",
+    "has_attachments": true,
+    "is_from_vip": false,
+    "label": "Minor"
+  }
+]
